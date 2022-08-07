@@ -25,7 +25,6 @@ drawings:
 
 汇报人： 窦一鸣
 
-
 <div class="abs-br m-6 flex gap-2">
   <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="text-xl icon-btn opacity-50 !border-none !hover:text-white">
     <carbon:edit />
@@ -55,71 +54,88 @@ The last comment block of each slide will be treated as slide notes. It will be 
 
 ---
 
-# CSRF(Cross Site Request Forgery)跨站请求伪造
+# XSS防御
 
-服务器发送静态HTML，用户只能请求和查看
-<div grid="~ cols-2 gap-4">
+<div class="mt-8">
 
-<div class="flex items-center">
+- 用户输入转义
+- 设置cookie为HttpOnly
+- 请求前再次验证
+- 使用CSP(Content Security Policy)
 
-- 每个URL对应一个单独的页面
-- 用户和服务器不存在交互
-- 新闻类网站
-
-</div>
-  
-```mermaid {scale: 0.5}
-sequenceDiagram
-  Client->>Server: HTML文件
-  Server->>Client: HTML文件
-```
-  
 </div>
 
 ---
 
-# 动态内容
+# 同源策略（Same-origin policy）
 
-服务器发送动态生成的HTML
-<div grid="~ cols-2 gap-4">
+同源指的是协议、域名、端口号都相同
 
-<div>
+<div class="mt-8">
 
-- PHP语言的出现
-- 用户可以创建内容，保存在服务器
-- 博客类网站
-
-```php {all|1-3|9|12|11|all}
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ page import="java.io.*,java.util.*" %>
-<!DOCTYPE html>
-<html>
-  <body>
-    <h1>编辑博客</h1>
-    <p>用户名：
-       <%= User.getName()%>
-    </p>
-    <form action="main.jsp" method="POST">
-      内容: <input type="text" name="content">
-      <br />
-      <input type="submit" value="提交" />
-    </form>
-  </body>
-</html>
-```
+- 跨源写操作（Cross-origin writes）一般是被允许的。例如链接，重定向以及表单提交。特定少数的 HTTP 请求需要添加预检请求。
+- 跨源资源嵌入（Cross-origin embedding）一般是被允许。
+- 跨源读操作（Cross-origin reads）一般是不被允许的。
+- 访问存储在浏览器中的数据,是以源进行分割。每个源都拥有自己单独的存储空间，一个源中的 JavaScript 脚本不能对属于其它源的数据进行读写操作。
+- ajax请求需遵守同源策略
 
 </div>
 
+---
+
+# CORS(Cross-Origin Resource Sharing)跨源资源共享
+
+一种基于 HTTP 头的机制，该机制通过允许服务器标示除了它自己以外的其它 origin（域，协议和端口)
+
+<div class="mt-8">
+
+简单请求
+
+1. 使用下列方法之一：
+    - GET
+    - HEAD
+    - POST
+
+2. 请求头仅包含以下字段： `Accept`, `Accept-Language`, `Content-Language`, `Content-Type`，其中Content-Type 的值仅限于下列三者之一:
+    - text/plain  
+    - multipart/form-data  
+    - application/x-www-form-urlencoded
+
+</div>
   
-```mermaid {scale: 0.5}
-sequenceDiagram
-  Client->>Server: 创建文章
-  Server->>Database: 存到数据库
-  Database->>Server: 是否插入成功
-  Server->>Client: 是否创建成功
-```
+---
+
+# CSRF(Cross Site Request Forgery)跨站请求伪造
+
+通过cookie保存用户登状态的网站。只要cookie没有失效，发送请求时就会自动的携带对应网站的cookie。
+<div class="mt-8">
+
+特点
+
+- 攻击发生在第三方网站
+- 攻击者冒充受害者提交操作，而不是直接窃取数据
+- 可以通过链接、img标签src、form表单提交等多种方式触发
+
+防御措施
+
+- CSRF token
+- SameSite cookies
+
+</div>
   
+---
+
+# SameSite cookies
+
+<div class="mt-8">
+
+The cookie-sending behavior if SameSite is not specified is SameSite=Lax. Previously the default was that cookies were sent for all requests.
+  
+Lax: Cookies are not sent on normal cross-site subrequests (for example to load images or frames into a third party site), but are sent when a user is navigating to the origin site
+
+Lax replaced None as the default value in order to ensure that users have reasonably robust defense against some classes of cross-site request forgery (CSRF) attacks.
+
+[Learn More](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite)
 </div>
 
 ---
@@ -149,8 +165,6 @@ sequenceDiagram
 ```
   
 </div>
-
-
 
 ---
 
@@ -203,10 +217,10 @@ $.ajax({url:"http://example.com/api",success:function(result){
 }});
 
 ```
+
 </div>
   
 </div>
-
 
 ---
 
@@ -215,7 +229,6 @@ $.ajax({url:"http://example.com/api",success:function(result){
 Vue是一套用于构建用户界面的渐进式框架。
 
 <div grid="~ cols-2 gap-4" >
-
 
 <div class="mt-50px">
 
